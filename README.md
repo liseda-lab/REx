@@ -99,7 +99,7 @@ To parse the results of the REx approach, you can use the `path_parser.py` scrip
 
 ## Authors
 - __Susana Nunes__
-- __Samy BadBadreddine__
+- __Samy Badreddine__
 - __Catia Pesquita__
 
 For any comments or help needed with this implementation, please send an email to: scnunes@ciencias.ulisboa.pt
