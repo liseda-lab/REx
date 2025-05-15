@@ -13,7 +13,7 @@ REx is a method designed to validate scientific hypotheses via **explanatory pat
 These paths are enriched with ontology-based classes to ensure **completeness** and **coherence** with biomedical knowledge.
 
 <p align="center">
-  <img src="Overview.png" alt="REx Overview" width="600"/>
+  <img src="Overview.png" alt="REx Overview" width="800"/>
 </p>
 
 
