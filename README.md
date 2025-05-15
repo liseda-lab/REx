@@ -6,9 +6,9 @@ Rewarding Explainability in Drug Repurposing with Knowledge Graphs
 
 REx is a method designed to validate scientific hypotheses via **explanatory paths in biomedical knowledge graphs**. It uses a **reinforcement learning (RL)** framework guided by a **multi-objective reward function** that prioritizes:
 
-- **Fidelity** – does the path connect the subject and object of the hypothesis?
-- **Relevance** – is the explanation specific and informative?
-- **Simplicity** – are the paths concise and interpretable?
+- **Fidelity** – ensures the path connects the subject and object of the hypothesis.
+- **Relevance** – prioritizes explanations that are specific and informative.
+- **Simplicity** – promotes concise and interpretable paths.
 
 These paths are enriched with ontology-based classes to ensure **completeness** and **coherence** with biomedical knowledge.
 
