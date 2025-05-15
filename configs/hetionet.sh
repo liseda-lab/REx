@@ -20,5 +20,5 @@ max_num_actions=400
 size_flexibility=1
 weighted_reward=1
 load_model=1
-model_load_dir="models/REx_hetionet/"
+model_load_dir="saved_models/REx_hetionet/"
 tensorboard_dir="tensorboard/REx_hetionet/"
