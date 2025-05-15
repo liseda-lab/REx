@@ -2,7 +2,9 @@
 """
 path_parser.py
 
-Parse REx output files to extract positive paths and their edge sequences.
+Parse REx output files to extract positive paths,
+mapping both node URIs and edge codes to labels,
+and producing a full 'labels' sequence per path.
 """
 
 import json
@@ -10,16 +12,15 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 # Type aliases
-NodePath = List[str]
-EdgePath = List[str]
-LabelMap = Dict[str, str]
-ParsedPaths = Dict[str, List[Dict[str, EdgePath]]]
+NodePath    = List[str]
+EdgePath    = List[str]
+LabelMap    = Dict[str, str]
+ParsedPaths = Dict[str, List[Dict[str, List[str]]]]
 
 
-def load_edge_labels(tsv_path: Path) -> LabelMap:
+def load_tsv_labels(tsv_path: Path) -> LabelMap:
     """
-    Load edge label mappings from a TSV file.
-    Each line should be: <edge_code>\\t<label>
+    Load a TSV of <code>\\t<label> into a dict.
     """
     mapping: LabelMap = {}
     with tsv_path.open(encoding='utf-8') as f:
@@ -29,86 +30,111 @@ def load_edge_labels(tsv_path: Path) -> LabelMap:
     return mapping
 
 
-def parse_block(block: str, edge_map: LabelMap) -> Optional[Tuple[NodePath, EdgePath]]:
+def parse_block(
+    block: str,
+    node_map: LabelMap,
+    edge_map: LabelMap
+) -> Optional[Tuple[NodePath, EdgePath, List[str]]]:
     """
-    Parse a single block of REx output. Returns (route, mapped_edges)
-    if the block contains a positive path (label == 1), else None.
+    Parse a single REx block. If label==1, return:
+      (raw_nodes, raw_edges, full_label_path)
+    where full_label_path alternates node-label, arrow, edge-label, arrow, node-label...
     """
     lines = [ln.strip() for ln in block.strip().splitlines() if ln.strip()]
     if len(lines) < 4:
         return None
 
-    route_line, edges_line, label_line, _score_line = lines[:4]
+    route_line, edges_line, label_line, _score = lines[:4]
     try:
         label = int(label_line)
     except ValueError:
         return None
-
-    # Only keep positively labeled paths
     if label != 1:
         return None
 
-    # Split route (nodes) and edges
-    node_route = route_line.split('\t')
-    edge_codes = [e for e in edges_line.split('\t') if e != 'NO_OP']
+    # Raw splits
+    raw_nodes = route_line.split('\t')
+    raw_edges = [e for e in edges_line.split('\t') if e != 'NO_OP']
 
-    # Map edge codes to labels, skipping missing ones
-    mapped_edges = [edge_map.get(code, code) for code in edge_codes]
-    return node_route, mapped_edges
+    # Map
+    labeled_nodes = [ node_map.get(n, n) for n in raw_nodes ]
+    labeled_edges = [ edge_map.get(e, e) for e in raw_edges ]
+
+    # Build full alternating label path:
+    full_labels: List[str] = []
+    for i, node_lbl in enumerate(labeled_nodes):
+        full_labels.append(node_lbl)
+        if i < len(labeled_edges):
+            full_labels.append(f"→ {labeled_edges[i]}")
+
+    return raw_nodes, raw_edges, full_labels
 
 
 def parse_paths_file(
-    file_path: Path,
+    paths_file: Path,
     edges_tsv: Path,
+    nodes_tsv: Path,
     separator: str = '#####################',
-    chunk_sep: str = '___'
+    chunk_sep: str   = '___'
 ) -> ParsedPaths:
     """
-    Parse an entire REx output file and return a dict mapping each query pair
-    to a list of dicts with 'route' and 'edges' for each positive path.
+    Parse the entire REx output and return:
+       { pair_key: [
+           {'route': [...], 'edges': [...], 'labels': [...]},
+           ...
+         ]
+       }
     """
-    edge_map = load_edge_labels(edges_tsv)
-    raw_text = file_path.read_text(encoding='utf-8').strip()
-    blocks = [blk for blk in raw_text.split(separator) if blk.strip()]
+    node_map = load_tsv_labels(nodes_tsv)
+    edge_map = load_tsv_labels(edges_tsv)
+
+    raw = paths_file.read_text(encoding='utf-8').strip()
+    blocks = [b for b in raw.split(separator) if b.strip()]
 
     results: ParsedPaths = {}
-
     for block in blocks:
         lines = block.splitlines()
         pair_key = lines[0].strip()
 
-        positive_paths: List[Dict[str, EdgePath]] = []
+        entries: List[Dict[str, List[str]]] = []
         for chunk in block.split(chunk_sep):
-            parsed = parse_block(chunk, edge_map)
+            parsed = parse_block(chunk, node_map, edge_map)
             if parsed:
-                route, edges = parsed
-                positive_paths.append({'route': route, 'edges': edges})
-
-        if positive_paths:
-            results[pair_key] = positive_paths
+                route, edges, labels = parsed
+                entries.append({
+                    'route': route,
+                    'edges': edges,
+                    'labels': labels
+                })
+        if entries:
+            results[pair_key] = entries
 
     return results
 
 
-def main(paths_file, edges_tsv):
+def main(paths_file, edges_tsv, nodes_tsv):
+    """
+    Main function to parse paths file and print the results.
+    """
+    parsed = parse_paths_file(paths_file, edges_tsv, nodes_tsv)
 
-    parsed = parse_paths_file(paths_file, edges_tsv)
-
-    # Print results
+    # Print to console
     for pair, entries in parsed.items():
         print(f"\nPair: {pair}")
-        for entry in entries:
-            print(f"  Route: {' -> '.join(entry['route'])}")
-            print(f"  Edges: {entry['edges']}")
+        for e in entries:
+            print(f"  Route : {e['route']}")
+            print(f"  Edges : {e['edges']}")
+            print(f"  Labels: {' '.join(e['labels'])}")
 
-    # Optionally, save to JSON for easy downstream use
-    out_json = paths_file.with_suffix('.json')
-    out_json.write_text(json.dumps(parsed, indent=2, ensure_ascii=False))
-    print(f"\nParsed output saved to {out_json}")
+    # Dump JSON
+    out = paths_file.with_suffix('.json')
+    out.write_text(json.dumps(parsed, indent=2, ensure_ascii=False))
+    print(f"\nParsed output saved to {out}")
 
 
 if __name__ == "__main__":
-    main("paths_CtD", "edges_labels.tsv")
-    #Note
-    # paths_CtD should be the path to your REx output file
-    # edges_labels.tsv should be the path to your edge label dataset
+    main(
+        paths_file=Path("paths_CtD"),
+        edges_tsv=Path("edges_labels.tsv"),
+        nodes_tsv=Path("graph_labels.tsv")
+    )
