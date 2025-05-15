@@ -90,7 +90,7 @@ def parse_paths_file(
     return results
 
 
-def main(paths_file,edges_tsv):
+def main(paths_file, edges_tsv):
 
     parsed = parse_paths_file(paths_file, edges_tsv)
 
