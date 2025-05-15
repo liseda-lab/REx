@@ -3,8 +3,22 @@ Rewarding Explainability in Drug Repurposing with Knowledge Graphs
 
 - This repo provides the implementation and Supplementary Material described in this [paper](https://liseda-lab.github.io/assets/pdf/2025IJCAI_RewardingExplainability.pdf).
 
-## Overview
-REx is an approach designed to validate scientific hypothesis. This README will guide you through building a Docker image, configuring the project, and running the necessary commands.
+
+REx is a method designed to validate scientific hypotheses via **explanatory paths in biomedical knowledge graphs**. It uses a **reinforcement learning (RL)** framework guided by a **multi-objective reward function** that prioritizes:
+
+- **Fidelity** – does the path connect the subject and object of the hypothesis?
+- **Relevance** – is the explanation specific and informative?
+- **Simplicity** – are the paths concise and interpretable?
+
+These paths are enriched with ontology-based classes to ensure **completeness** and **coherence** with biomedical knowledge.
+
+<p align="center">
+  <img src="Overview.png" alt="REx Overview" width="600"/>
+</p>
+
+
+
+---
 
 ## Prerequisites
 - Docker installed on your machine
