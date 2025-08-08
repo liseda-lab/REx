@@ -57,7 +57,6 @@ class RelationEntityGrapher:
         for e1 in self.store:
             num_actions = 1
             ###   NO_OP RELATION
-            ###self.array_store[e1, 0, 1] = self.relation_vocab['NO_OP'] # COMMENT THIS LINE FOR REX
             self.array_store[e1, 0, 0] = e1
             for r, e2, w in self.store[e1]: #FOR THE WEIGHT
                 if num_actions == self.array_store.shape[1]:
