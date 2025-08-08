@@ -19,6 +19,6 @@ train_relation_embeddings=1
 max_num_actions=400
 weighted_reward=1
 size_flexibility=1
-model_load_dir="saved_models/primekg/"
+model_load_dir="saved_models/primekg/model.ckpt"
 load_model=1
 tensorboard_dir="tensorboard/primekg/"
