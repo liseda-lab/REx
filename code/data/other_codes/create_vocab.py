@@ -4,7 +4,7 @@ import argparse
 import os
 
 dataset = 'primekg'
-root_dir = '../../'
+root_dir = '../../../'
 vocab_dir = root_dir + 'datasets/' + dataset + '/vocab/'
 dir = root_dir + 'datasets/' + dataset  + '/'
 os.makedirs(vocab_dir)
