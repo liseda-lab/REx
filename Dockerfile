@@ -4,6 +4,12 @@ FROM tensorflow/tensorflow:1.15.0-gpu-py3
 # public key
 RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
 
+# Install Python 3.7
+RUN apt-get update && apt-get install -y python3.7 python3.7-dev python3.7-venv
+
+# Set python 3.7 as default
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 1
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-dev \
     wget \
