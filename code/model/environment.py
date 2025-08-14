@@ -173,13 +173,17 @@ class Episode(object):
 
             # ANY ROLLOUT THAT REACHES THE END_ENTITY => done_mask = TRUE
             newly_done = (chosen_ents == self.end_entities)
+            prev_done  = self.done_mask.copy()
+        
+            # PAD ONLY ROLLOUTS THAT WERE ALREADY DONE BEFORE THIS STEP
+            chosen_weights[prev_done] = 2.0
+        
+            # APPEND REAL WEIGHT FOR THE LAST HOP OF NEWLY COMPLETED ROLLOUTS
+            self.weight_history.append(chosen_weights)
+        
+            # MARK NEW COMPLETION AS DONE FOR FUTURE STEPS
             self.done_mask = np.logical_or(self.done_mask, newly_done)
 
-            # FOR ANY ROLLOUT THAT IS DONE, SET THE WEIGHT TO '2.0' TO SIGNAL PADDING
-            chosen_weights[self.done_mask] = 2.0
-
-            # APPEND THIS VECTOR OF WEIGHTS (SHAPE [B,]) TO THE HISTORY
-            self.weight_history.append(chosen_weights)
 
             # UPDATE VISITED ENTITIES
             new_visited = np.zeros((bsz, self.visited_entities.shape[1] + 1), dtype=np.int32)
