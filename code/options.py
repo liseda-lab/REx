@@ -48,6 +48,8 @@ def read_options():
     parser.add_argument('--size_flexibility', default=1, type=int)
     parser.add_argument('--tensorboard_dir', default="tensorboard", type=str)
     parser.add_argument("--prevent_cycles", default=0, type=int)
+    parser.add_argument('--waiting_period', default=3, type=int, help='Early stopping patience (number of evaluations with no MRR improvement).')
+
 
     
     try:
