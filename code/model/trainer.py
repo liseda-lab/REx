@@ -105,6 +105,13 @@ class Trainer(object):
         self.ePAD = self.entity_vocab['PAD'] # entity padding index
         self.rPAD = self.relation_vocab['PAD'] # relation padding index
 
+        # --- NEW: early stopping state ---
+        self.best_metric = -1.0                 # best MRR so far
+        self.early_stopping = False
+        self.waiting_period = params.get('waiting_period', 3)  # patience 
+        self.current_waiting_period = self.waiting_period
+        # ----------------------------------
+
         # Initialize baseline for reward adjustment and optimizer
         self.baseline = ReactiveBaseline(l=self.Lambda)
         self.optimizer = tf.train.AdamOptimizer(self.learning_rate)
@@ -400,17 +407,45 @@ class Trainer(object):
 
             
             # Evaluate model periodically
-            if self.batch_counter%self.eval_every == 0:
+            # if self.batch_counter%self.eval_every == 0:
+                # with open(self.output_dir + '/scores.txt', 'a') as score_file:
+                    # score_file.write("Score for iteration " + str(self.batch_counter) + "\n")
+                
+                # os.mkdir(self.path_logger_file + "/" + str(self.batch_counter))
+               # self.path_logger_file_ = self.path_logger_file + "/" + str(self.batch_counter) + "/paths"
+                # #PUT PRINT PATHS TO FALSE AGAIN AFTER DEBUG 
+                # self.test(sess, beam=True, print_paths=False)
+
+
+            # Evaluate model periodically
+            if self.batch_counter % self.eval_every == 0:
                 with open(self.output_dir + '/scores.txt', 'a') as score_file:
                     score_file.write("Score for iteration " + str(self.batch_counter) + "\n")
-                
-                os.mkdir(self.path_logger_file + "/" + str(self.batch_counter))
+            
+                os.makedirs(self.path_logger_file + "/" + str(self.batch_counter), exist_ok=True)
                 self.path_logger_file_ = self.path_logger_file + "/" + str(self.batch_counter) + "/paths"
-                #PUT PRINT PATHS TO FALSE AGAIN AFTER DEBUG 
-                self.test(sess, beam=True, print_paths=False)
+            
+                # TEST now returns MRR; we still save best model inside test() based on Hits@10 (unchanged)
+                current_mrr = self.test(sess, beam=True, print_paths=False)
+            
+                # --- NEW: patience logic on MRR ---
+                if current_mrr > self.best_metric:
+                    self.best_metric = current_mrr
+                    self.current_waiting_period = self.waiting_period
+                    logger.info(f"[IMPROVE] New best MRR: {current_mrr:.4f} at iteration {self.batch_counter}")
+                else:
+                    self.current_waiting_period -= 1
+                    logger.info(f"[NO IMPROVE] MRR: {current_mrr:.4f}, "
+                                f"Waiting Period: {self.current_waiting_period}/{self.waiting_period}")
+                    if self.current_waiting_period == 0:
+                        self.early_stopping = True
+                        logger.info(f"[EARLY STOP] Best MRR was {self.best_metric:.4f}")
 
+            if self.early_stopping:
+                logger.info(f"[TRAINING STOPPED] Early stopping triggered at iteration {self.batch_counter}")
+                break
             # logger.info('Memory usage: %s (kb)' % resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
-
+            
             gc.collect()
             if self.batch_counter >= self.total_iterations:
                 break
@@ -672,6 +707,7 @@ class Trainer(object):
 
         self.write_results_to_file(final_rewards)
         self.log_results(final_rewards)
+        return final_rewards["MRR"]
 
 
     def write_results_to_file(self, final_rewards):
