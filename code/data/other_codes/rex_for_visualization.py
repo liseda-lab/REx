@@ -85,23 +85,42 @@ class SimpleBeamParser:
         
         for i, edge_type in enumerate(edges):
             if edge_type and edge_type != 'NO_OP':
-                # Get IC values for the nodes connected by this edge
                 if i < len(nodes) - 1:
                     node1 = nodes[i]
                     node2 = nodes[i + 1]
                     
-                    # Get IC from clustered_ic for this edge type
-                    ic1 = self.clustered_ic.get(edge_type, {}).get(node1, 0.0)
-                    ic2 = self.clustered_ic.get(edge_type, {}).get(node2, 0.0)
+                    # Try both with and without prefix for edge type
+                    edge_key = edge_type
+                    if edge_key not in self.clustered_ic:
+                        edge_key = f"http://onto/{edge_type}"
+                        if edge_key not in self.clustered_ic:
+                            if self.debug:
+                                print(f"    Warning: Edge type '{edge_type}' not found in clustered IC")
+                            continue
                     
-                    # Average IC for this edge
+                    # Try both formats for nodes
+                    node1_key = node1
+                    node2_key = node2
+                    
+                    # Check if we need to add prefix to nodes
+                    edge_dict = self.clustered_ic.get(edge_key, {})
+                    if node1 not in edge_dict and f"http://onto/{node1}" in edge_dict:
+                        node1_key = f"http://onto/{node1}"
+                    if node2 not in edge_dict and f"http://onto/{node2}" in edge_dict:
+                        node2_key = f"http://onto/{node2}"
+                    
+                    # Get IC values
+                    ic1 = edge_dict.get(node1_key, 0.0)
+                    ic2 = edge_dict.get(node2_key, 0.0)
+                    
+                    if self.debug and (ic1 == 0.0 or ic2 == 0.0):
+                        print(f"    Warning: Zero IC for {node1}={ic1:.3f}, {node2}={ic2:.3f} on edge {edge_type}")
+                    
                     edge_ic = (ic1 + ic2) / 2.0
                     total_ic += edge_ic
                     edge_count += 1
         
-        # Return average IC across all edges
         return total_ic / edge_count if edge_count > 0 else 0.0
-    
     def _get_metapath(self, nodes: List[str], edges: List[str]) -> str:
         """Generate metapath signature from nodes and edges."""
         # Create pattern from node types and edge types
@@ -467,10 +486,10 @@ if __name__ == "__main__":
     # --debug #OPTIONAL 
 
     #FOR ALSO FINDING LCAs
-    # python rex_for_visualization.py paths_CtD \
+    # python rex_for_visualization.py hetionet_dt/paths_CbG \
     #     --nodes-tsv graph_labels.tsv \
     #     --edges-tsv edges_labels.tsv \
-    #     --clustered-ic clustered_IC_classes_edgeType.json \
+    #     --clustered-ic hetionet_dt/clustered_IC_classes_edgeType.json \
     #     --enable-lca \
     #     --ncit-pickle NCIT_HETIONET_DAG.pkl \
     #     --chebi-pickle CHEBI_HETIONET_DAG.pkl \
