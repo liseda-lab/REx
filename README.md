@@ -105,7 +105,7 @@ To parse the results of the REx approach, you can use the `path_parser.py` scrip
 For any comments or help needed with this implementation, please send an email to: scnunes@ciencias.ulisboa.pt
 
 ## Acknowledgments
-This work was supported by FCT through the fellowship 2023.00653.BD, and the LASIGE Research Unit, ref. UID/00408/2025. It was also partially supported by the KATY project (European Union Horizon 2020 grant No. 101017453), and project 41, HfPT: Health from Portugal, funded by the Portuguese Plano de Recuperação e Resiliência. We thank Sony AI, where the first author conducted part of this work during an internship. We also thank Pedro Cotovio for his input on reinforcement learning fundamentals. 
+This work was supported by FCT through the fellowship 2023.00653.BD, and the LASIGE Research Unit, ref. UID/00408/2025. It was also partially supported by the KATY project (European Union Horizon 2020 grant No. 101017453), and project 41, HfPT: Health from Portugal, funded by the Portuguese Plano de Recuperação e Resiliência. We thank Sony AI, where the first author conducted part of this work during an internship.
 
 ## Citation
 If you use this code in your research, please cite the following paper:
