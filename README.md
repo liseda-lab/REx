@@ -112,10 +112,18 @@ If you use this code in your research, please cite the following paper:
 
 ```
 If you use this code, please cite our paper
-@inproceedings{Nunes2025REx,
-  title={Rewarding Explainability in Drug Repurposing with Knowledge Graphs},
-  author={Nunes, Susana and Badreddine, Samy and Pesquita, Catia},
-  booktitle={IJCAI},
-  year={2025}
+@inproceedings{ijcai2025p515,
+  title     = {Rewarding Explainability in Drug Repurposing with Knowledge Graphs},
+  author    = {Nunes, Susana and Badreddine, Samy and Pesquita, Catia},
+  booktitle = {Proceedings of the Thirty-Fourth International Joint Conference on
+               Artificial Intelligence, {IJCAI-25}},
+  publisher = {International Joint Conferences on Artificial Intelligence Organization},
+  editor    = {James Kwok},
+  pages     = {4624--4632},
+  year      = {2025},
+  month     = {8},
+  note      = {Main Track},
+  doi       = {10.24963/ijcai.2025/515},
+  url       = {https://doi.org/10.24963/ijcai.2025/515},
 }
 ```
