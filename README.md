@@ -112,7 +112,7 @@ If you use this code in your research, please cite the following paper:
 
 ```
 If you use this code, please cite our paper
-@inproceedings{ijcai2025p515,
+@inproceedings{nunesRewarding2025,
   title     = {Rewarding Explainability in Drug Repurposing with Knowledge Graphs},
   author    = {Nunes, Susana and Badreddine, Samy and Pesquita, Catia},
   booktitle = {Proceedings of the Thirty-Fourth International Joint Conference on
