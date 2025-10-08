@@ -1,7 +1,7 @@
 # REx
 Rewarding Explainability in Drug Repurposing with Knowledge Graphs
 
-- This repo provides the implementation and Supplementary Material described in this [paper](https://liseda-lab.github.io/assets/pdf/2025IJCAI_RewardingExplainability.pdf).
+- This repo provides the implementation and Supplementary Material described in this [paper](https://www.ijcai.org/proceedings/2025/0515.pdf).
 
 
 REx is a method designed to validate scientific hypotheses via **explanatory paths in biomedical knowledge graphs**. It uses a **reinforcement learning** framework guided by a **multi-objective reward function** that prioritizes:
