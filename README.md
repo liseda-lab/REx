@@ -111,7 +111,6 @@ This work was supported by FCT through the fellowship 2023.00653.BD, and the LAS
 If you use this code in your research, please cite the following paper:
 
 ```
-If you use this code, please cite our paper
 @inproceedings{nunesRewarding2025,
   title     = {Rewarding Explainability in Drug Repurposing with Knowledge Graphs},
   author    = {Nunes, Susana and Badreddine, Samy and Pesquita, Catia},
