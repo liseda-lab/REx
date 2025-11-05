@@ -477,7 +477,7 @@ def main():
 
 if __name__ == "__main__":
     main()
-
+ 
     # python rex_for_visualization.py paths_CtD \
     # --nodes-tsv graph_labels.tsv \
     # --edges-tsv edges_labels.tsv \
@@ -495,3 +495,5 @@ if __name__ == "__main__":
     #     --chebi-pickle CHEBI_HETIONET_DAG.pkl \
     #     --onto-labels onto_labels.json \
     #     --output output_with_lca.json
+
+    ##NCIT_HETIONET_DAG.pkl -> pickle file containing a DAG graph that connects hetionet entities to NCIT through mappings.
