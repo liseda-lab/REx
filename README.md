@@ -113,7 +113,7 @@ The `compute_IC` folder contains a guide and template scripts for calculating th
 -  `3. calculate_clusterIC.py` -  This script calculates the node degree for clustered nodes and computes the IC based on the node degree.
 -  `extra_create_graphs.py`- Template for a function to create an RDF graph from the dataset files and an extra function that joins the RDF graph with ontologies in case you want to create semantically richer embeddings.
 
-In our approach, we created a richer graph using NCIT and CHEBI, leveraging mappings from [AML][https://github.com/AgreementMakerLight/AML-Project] and ran [OWL2Vec*][https://github.com/KRR-Oxford/OWL2Vec-Star] to generate semantically richer embeddings. However, the scripts can be used with other embeddings as long as it is a json in the same format and you provide an RDF graph of your dataset.  
+In our approach, we created a richer graph using NCIT and CHEBI, leveraging mappings from [AML](https://github.com/AgreementMakerLight/AML-Project) and ran [OWL2Vec*](https://github.com/KRR-Oxford/OWL2Vec-Star) to generate semantically richer embeddings. However, the scripts can be used with other embeddings as long as it is a json in the same format and you provide an RDF graph of your dataset.  
 
 ## Authors
 - __Susana Nunes__
