@@ -106,8 +106,8 @@ To parse the results of the REx approach, you can use the `path_parser.py` scrip
   - `edge_labels.tsv`: a tsv file with the labels of the edges in the graph. The first column is the edge ID and the second column is the label.
   - `clustered_IC_classes_edgeType.json`: a json file with the IC scores. 
 
-## Extra files 
-The files mentioned for processing REx results are too large for GitHub, but are available for download [here](https://www.ijcai.org/proceedings/2025/0515.pdf) [SOON AVAILABLE].
+## DAG files 
+The DAG files mentioned for processing REx results are too large for GitHub, but are available for download [here](https://drive.google.com/drive/folders/1gLTVNeY-g2JCgeByGuzn8uqGVs8edxRq?usp=sharing).
 
 
 ## Authors
