@@ -2,7 +2,7 @@
 Rewarding Explainability in Drug Repurposing with Knowledge Graphs
 
 - This repo provides the implementation and Supplementary Material described in this [paper](https://www.ijcai.org/proceedings/2025/0515.pdf).
-
+- A more modern PyTorch version will soon be available here.
 
 REx is a method designed to validate scientific hypotheses via **explanatory paths in biomedical knowledge graphs**. It uses a **reinforcement learning** framework guided by a **multi-objective reward function** that prioritizes:
 
@@ -96,6 +96,19 @@ To parse the results of the REx approach, you can use the `path_parser.py` scrip
   - `dataset_ontology_DAG.pkl`: a pickle file with a DAG with the subclasses of the ontology, the dataset and the mapping of the entities to the ontology classes.
   - `onto_labels.json`: a json with a dictionary mapping the entity IDs from the ontologies to their labels.
   - `graph_labels.tsv`: a tsv file with the labels of the entities in the graph. The first column is the entity ID and the second column is the label.
+
+## Parse, Enrich, and Prepare for Visualization. 
+- `rex_for_visualization.py` parses the output and saves it into a json indicated for visualization tools. It includes LCA support.
+- required files:
+  - `dataset_ontology_DAG.pkl`[optional]: a pickle file with a DAG with the subclasses of the ontology, the dataset and the mapping of the entities to the ontology classes.
+  - `onto_labels.json`: a json with a dictionary mapping the entity IDs from the ontologies to their labels.
+  - `graph_labels.tsv`: a tsv file with the labels of the entities in the graph. The first column is the entity ID and the second column is the label.
+  - `edge_labels.tsv`: a tsv file with the labels of the edges in the graph. The first column is the edge ID and the second column is the label.
+  - `clustered_IC_classes_edgeType.json`: a json file with the IC scores. 
+
+## Extra files 
+The files mentioned for processing REx results are too large for GitHub, but are available for download [here](https://www.ijcai.org/proceedings/2025/0515.pdf) [SOON AVAILABLE].
+
 
 ## Authors
 - __Susana Nunes__
