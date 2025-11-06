@@ -92,23 +92,19 @@ To parse the results of the REx approach, you can use the `path_parser.py` scrip
 
 ## Ontology Enrichment
 - `lca_finder.py` contains the lowest common ancestor (LCA) implementation for the entities in a given dataset. It outputs the LCA for each pair provided in the input list.
-- required files:
+- required files (all in the datasets folder):
   - `dataset_ontology_DAG.pkl`: a pickle file with a DAG with the subclasses of the ontology, the dataset and the mapping of the entities to the ontology classes.
   - `onto_labels.json`: a json with a dictionary mapping the entity IDs from the ontologies to their labels.
   - `graph_labels.tsv`: a tsv file with the labels of the entities in the graph. The first column is the entity ID and the second column is the label.
 
 ## Parse, Enrich, and Prepare for Visualization. 
 - `rex_for_visualization.py` parses the output and saves it into a json indicated for visualization tools. It includes LCA support.
-- required files:
+- required files (all in the datasets folder):
   - `dataset_ontology_DAG.pkl`[optional]: a pickle file with a DAG with the subclasses of the ontology, the dataset and the mapping of the entities to the ontology classes.
   - `onto_labels.json`: a json with a dictionary mapping the entity IDs from the ontologies to their labels.
   - `graph_labels.tsv`: a tsv file with the labels of the entities in the graph. The first column is the entity ID and the second column is the label.
   - `edge_labels.tsv`: a tsv file with the labels of the edges in the graph. The first column is the edge ID and the second column is the label.
   - `clustered_IC_classes_edgeType.json`: a json file with the IC scores. 
-
-## DAG files 
-The DAG files mentioned for processing REx results are too large for GitHub, but are available for download [here](https://drive.google.com/drive/folders/1gLTVNeY-g2JCgeByGuzn8uqGVs8edxRq?usp=sharing).
-
 
 ## Authors
 - __Susana Nunes__
