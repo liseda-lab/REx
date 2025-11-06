@@ -2,7 +2,7 @@
 Rewarding Explainability in Drug Repurposing with Knowledge Graphs
 
 - This repo provides the implementation and Supplementary Material described in this [paper](https://www.ijcai.org/proceedings/2025/0515.pdf).
-
+- A more modern PyTorch version will soon be available here.
 
 REx is a method designed to validate scientific hypotheses via **explanatory paths in biomedical knowledge graphs**. It uses a **reinforcement learning** framework guided by a **multi-objective reward function** that prioritizes:
 
