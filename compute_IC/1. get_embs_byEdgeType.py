@@ -118,7 +118,7 @@ if __name__ == "__main__":
     embs_path = 'embeddings.json'
     
     #THIS IS IN RDF format (not necessarily owl) as long as RDFLIB can parse
-    graph_path = 'rdf_graph.owl'
+    graph_path = 'graph.owl' # this graph is the owl graph withouth ontologies 
 
     graph = Graph()
     graph.parse(graph_path)

@@ -422,8 +422,8 @@ if __name__ == "__main__":
 
     # Input paths
     #file with nodes to calculate IC (one per line) (e.g. http://onto/Gene::10318 - your graph ents need to always have the url)
-    owl_classes_path = "owlClasses.txt"
-    #file with RDF graph
+    owl_classes_path = "owlClasses.txt" #nodes from the dataset to calculate IC for
+    #file with dataset (in OWL format)
     rdf_path =  "graph.owl"
 
     #file with edge-type clustering
@@ -439,10 +439,10 @@ if __name__ == "__main__":
         owl_classes = [line.strip() for line in file.readlines()]
     print(f"Loaded {len(owl_classes)} OWL classes.")
 
-    # Load RDF graph
+    # Load RDF graph with ontologies -> if you're using the pkl file from the script that creates the graph, change this to load the pkl file instead
     print(f"Loading RDF graph from: {rdf_path}")
     graph = Graph()
-    graph.parse(rdf_path)
+    graph.parse(rdf_path) 
     print("RDF graph loaded.")
 
     # Load edge-type clustering
