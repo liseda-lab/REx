@@ -23,7 +23,7 @@ import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
-from torch.utils.tensorboard import SummaryWriter
+#from torch.utils.tensorboard import SummaryWriter
 
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
@@ -90,7 +90,7 @@ def configure_logger(log_file_path):
 
 
 class Trainer(object):
-    def __init__(self, params, tensorboard_dir):
+    def __init__(self, params, tensorboard_dir=None):
         for key, val in params.items(): setattr(self, key, val); 
         self.agent = Agent(params) 
         self.set_random_seed(self.seed) # set random seed for reproducibility
@@ -116,9 +116,9 @@ class Trainer(object):
         self.baseline = ReactiveBaseline(l=self.Lambda)
         self.optimizer = tf.train.AdamOptimizer(self.learning_rate)
 
-        self.tensorboard_dir = tensorboard_dir
+        #self.tensorboard_dir = tensorboard_dir
 
-        self.summary_writer = SummaryWriter(log_dir=self.tensorboard_dir)
+        #self.summary_writer = SummaryWriter(log_dir=self.tensorboard_dir)
 
     def set_random_seed(self, seed):
             """
@@ -398,12 +398,12 @@ class Trainer(object):
                                (num_ep_correct / self.batch_size),
                                train_loss))
 
-            with self.summary_writer:
-                self.summary_writer.add_scalar('avg_reward_per_batch', avg_reward, self.batch_counter)
-                self.summary_writer.add_scalar('avg_positive_reward', avg_positive_reward, self.batch_counter)
-                self.summary_writer.add_scalar('mean_total_reward', mean_total_reward, self.batch_counter)
-                self.summary_writer.add_scalar('train_loss', train_loss, self.batch_counter)
-                self.summary_writer.add_scalar('avg_ep_correct', (num_ep_correct / self.batch_size), self.batch_counter)
+            # with self.summary_writer:
+            #     self.summary_writer.add_scalar('avg_reward_per_batch', avg_reward, self.batch_counter)
+            #     self.summary_writer.add_scalar('avg_positive_reward', avg_positive_reward, self.batch_counter)
+            #     self.summary_writer.add_scalar('mean_total_reward', mean_total_reward, self.batch_counter)
+            #     self.summary_writer.add_scalar('train_loss', train_loss, self.batch_counter)
+            #     self.summary_writer.add_scalar('avg_ep_correct', (num_ep_correct / self.batch_size), self.batch_counter)
 
             
             # Evaluate model periodically
@@ -450,7 +450,7 @@ class Trainer(object):
             if self.batch_counter >= self.total_iterations:
                 break
 
-        self.summary_writer.close()
+        #self.summary_writer.close()
 
     def test(self, sess, beam=True, print_paths=True, save_model = True, mrr = True):
         """
@@ -775,7 +775,7 @@ if __name__ == '__main__':
 
     #TRAINING
     if not options['load_model']:
-        trainer = Trainer(options, tensorboard_dir=options['tensorboard_dir'])
+        trainer = Trainer(options, tensorboard_dir= None)
         with tf.Session(config=config) as sess:
             sess.run(trainer.initialize())
             trainer.initialize_pretrained_embeddings(sess=sess)
@@ -792,7 +792,7 @@ if __name__ == '__main__':
         logger.info("Skipping training")
         logger.info("Loading model from {}".format(options["model_load_dir"]))
 
-    trainer = Trainer(options, tensorboard_dir=options['tensorboard_dir'])
+    trainer = Trainer(options, tensorboard_dir= None)
     if options['load_model']:
         save_path = options['model_load_dir']
         path_logger_file = trainer.path_logger_file
