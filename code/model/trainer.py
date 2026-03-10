@@ -370,7 +370,7 @@ class Trainer(object):
             loss_before_regularization = np.stack(loss_before_regularization, axis=1)
             
             # Get rewards and compute cumulative discounted reward
-            rewards = episode.get_reward_weights_sigmoid()
+            rewards = episode.get_reward_ic_based()
             cum_discounted_reward = self.calc_cum_discounted_reward(rewards)  # [B, T]
 
             # Perform backpropagation
@@ -594,7 +594,7 @@ class Trainer(object):
                     state['current_entities'])
 
             # Process final rewards from environment
-            rewards = episode.get_reward_weights_sigmoid()  
+            rewards = episode.get_reward_ic_based()  
             #print(rewards)
             reward_reshape = rewards.reshape((temp_batch_size, self.test_rollouts))
             # reshape and sort on the *frozen* full‐log_probs

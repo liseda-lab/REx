@@ -17,7 +17,7 @@ class Episode(object):
 
     def __init__(self, graph, data, params):
         self.grapher = graph
-        self.batch_size, self.path_len, num_rollouts, test_rollouts, positive_reward, negative_reward, mode, batcher, weighted_reward, adjust_factor, sigmoid, size_flexibility, prevent_cycles = params
+        self.batch_size, self.path_len, num_rollouts, test_rollouts, positive_reward, negative_reward, mode, batcher, IC_reward, adjust_factor, early_stopping, prevent_cycles = params
         self.mode = mode
         if self.mode == 'train':
             self.num_rollouts = num_rollouts
@@ -29,9 +29,8 @@ class Episode(object):
         self.batch_weights = batch_weights
         self.positive_reward = positive_reward
         self.negative_reward = negative_reward
-        self.weighted_reward = weighted_reward
-        self.sigmoid = sigmoid
-        self.size_flexibility = size_flexibility
+        self.IC_reward = IC_reward
+        self.early_stopping = early_stopping
         self.prevent_cycles = prevent_cycles
         self.adjust_factor = adjust_factor
         start_entities = np.repeat(start_entities, self.num_rollouts)
@@ -81,7 +80,7 @@ class Episode(object):
         return reward
 
 
-    def get_reward_weights_sigmoid(self):
+    def get_reward_ic_based(self):
         """
         CALCULATE REWARD BASED ON THE POSITIVE REWARD AND THE AVERAGE WEIGHT (IC).
         USE '2.0' AS A SENTINEL FOR PADDING AND IGNORE IT IN THE MEAN.
@@ -99,28 +98,16 @@ class Episode(object):
         # 4) CALCULATE THE MEAN ALONG AXIS=0 (ROLLOUT DIM), IGNORING NaN
         average_ic = np.nanmean(weights_array, axis=0)  # SHAPE [B,]
 
-        # 5) CALCULATE SIZE OF THE PATHS
-        size = np.sum(~mask_2, axis=0)  # shape (B,)
-
-       # 6) GIVE A PENALTY TO THE SIZE OF THE PATH:
-        #    IF SIZE >= 3 => 0.5 (PENALIZE)
-        #    ELSE         => 1 (KEEP REWARD)
-        punish_size = np.where(size >= 3, 0.5, 1)
-    
-        # 7) BUILD THE REWARD BASED ON SUCCESS
+        # 5) BUILD THE REWARD BASED ON SUCCESS
         success_mask = (self.current_entities == self.end_entities)
 
-        # 8) CALCULATE REWARD
-        if self.sigmoid==True and self.weighted_reward==True:
-            positive_part = punish_size * self.positive_reward * average_ic
-
-        elif self.weighted_reward==True and self.sigmoid==False:
+        # 6) CALCULATE REWARD
+        if self.IC_reward:
             positive_part = self.positive_reward * average_ic
-            
         else:
             positive_part = self.positive_reward
 
-        # 9) BUILD THE FINAL REWARD
+        # 7) BUILD THE FINAL REWARD
         condlist   = [success_mask, ~success_mask]
         choicelist = [positive_part, self.negative_reward]
         final_reward = np.select(condlist, choicelist)
@@ -139,7 +126,7 @@ class Episode(object):
         #calculate the average of the edge weights
         average_ic = np.mean(self.weight_history, axis=0) 
 
-        if self.weighted_reward:
+        if self.IC_reward:
             #simple multiplication of the positive reward with the average of the edge weights
             positive_reward = self.positive_reward * average_ic
 
@@ -160,7 +147,7 @@ class Episode(object):
 
 
     def __call__(self, action):
-        if self.size_flexibility:
+        if self.early_stopping:
             self.current_hop += 1
             bsz = self.no_examples * self.num_rollouts
 
@@ -249,10 +236,9 @@ class Episode(object):
 
 class env(object):
     def __init__(self, params, mode='train'):
-        self.weighted_reward = params['weighted_reward']
+        self.IC_reward = params['IC_reward']
         self.adjust_factor = params['IC_importance']
-        self.sigmoid = params['sigmoid']
-        self.size_flexibility = params['size_flexibility']
+        self.early_stopping = params['early_stopping']
         self.batch_size = params['batch_size']
         self.num_rollouts = params['num_rollouts']
         self.positive_reward = params['positive_reward']
@@ -286,7 +272,7 @@ class env(object):
                                              )
 
     def get_episodes(self):
-        params = self.batch_size, self.path_len, self.num_rollouts, self.test_rollouts, self.positive_reward, self.negative_reward, self.mode, self.batcher, self.weighted_reward, self.adjust_factor, self.sigmoid, self.size_flexibility, self.prevent_cycles
+        params = self.batch_size, self.path_len, self.num_rollouts, self.test_rollouts, self.positive_reward, self.negative_reward, self.mode, self.batcher, self.IC_reward, self.adjust_factor, self.early_stopping, self.prevent_cycles
         if self.mode == 'train':
             for data in self.batcher.yield_next_batch_train():
                 yield Episode(self.grapher, data, params)

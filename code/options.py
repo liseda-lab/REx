@@ -41,11 +41,10 @@ def read_options():
     parser.add_argument("--model_load_dir", default="", type=str)
     parser.add_argument("--load_model", default=0, type=int)
     parser.add_argument("--agent_IC_guiding", default=0, type=int)
-    parser.add_argument("--weighted_reward", default=1, type=int)
+    parser.add_argument("--IC_reward", default=1, type=int)
     parser.add_argument('--IC_importance', default=0, type=float)
-    parser.add_argument('--sigmoid', default=0, type=int)
     parser.add_argument('--seed', default=None, type=int)
-    parser.add_argument('--size_flexibility', default=1, type=int)
+    parser.add_argument('--early_stopping', default=1, type=int)
     parser.add_argument('--tensorboard_dir', default="tensorboard", type=str)
     parser.add_argument("--prevent_cycles", default=0, type=int)
     parser.add_argument('--waiting_period', default=3, type=int, help='Early stopping patience (number of evaluations with no MRR improvement).')
@@ -63,9 +62,8 @@ def read_options():
     parsed['train_relation_embeddings'] = (parsed['train_relation_embeddings'] == 1)
     
     parsed['agent_IC_guiding'] = (parsed['agent_IC_guiding'] == 1)
-    parsed['weighted_reward'] = (parsed['weighted_reward'] == 1)
-    parsed['sigmoid'] = (parsed['sigmoid'] == 1)
-    parsed['size_flexibility'] = (parsed['size_flexibility'] == 1)
+    parsed['IC_reward'] = (parsed['IC_reward'] == 1)
+    parsed['early_stopping'] = (parsed['early_stopping'] == 1)
     parsed['prevent_cycles'] = (parsed['prevent_cycles'] == 1)
     
     parsed['pretrained_embeddings_action'] = ""
@@ -74,7 +72,7 @@ def read_options():
     timestamp = datetime.datetime.now().strftime("%d-%m_%H:%M:%S")
 
 
-    parsed['output_dir'] = parsed['base_output_dir'] + f'/{timestamp}_Plength-{parsed["path_length"]}_flexi-{parsed["size_flexibility"]}_ic-{parsed["weighted_reward"]}_noCycles-{parsed["prevent_cycles"]}'
+    parsed['output_dir'] = parsed['base_output_dir'] + f'/{timestamp}_Plength-{parsed["path_length"]}_flexi-{parsed["early_stopping"]}_ic-{parsed["IC_reward"]}_noCycles-{parsed["prevent_cycles"]}'
 
     
     parsed['model_dir'] = parsed['output_dir']+'/'+ 'model/'

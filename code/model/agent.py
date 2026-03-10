@@ -13,9 +13,8 @@ class Agent(object):
     def __init__(self, params):
         self.prevent_cycles =params['prevent_cycles'] #to avoid cycles in the graph
         self.guiding_ic=params['agent_IC_guiding']
-        self.weighted_reward=params['weighted_reward']
+        self.IC_reward=params['IC_reward']
         self.adjust_factor=params['IC_importance']
-        self.sigmoid=params['sigmoid']
         self.action_vocab_size = len(params['relation_vocab'])
         self.entity_vocab_size = len(params['entity_vocab'])
         self.embedding_size = params['embedding_size']
