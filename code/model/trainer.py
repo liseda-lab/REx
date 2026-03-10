@@ -553,12 +553,14 @@ class Trainer(object):
                     y = idx//self.max_num_actions
                     x = idx%self.max_num_actions
 
+                    ## FIX BEAM - offset y BEFORE reindexing so each query group
+                    ## stays aligned with its own rows (not query 0’s rows)
+                    y += np.repeat([b*k for b in range(temp_batch_size)], k)
+
                     # SHIFT the environment’s arrays to maintain correct alignment
                     episode.visited_entities = episode.visited_entities[y, :]
                     episode.done_mask        = episode.done_mask[y]
                     episode.current_entities = episode.current_entities[y]
-
-                    y += np.repeat([b*k for b in range(temp_batch_size)], k)
                     state['current_entities'] = state['current_entities'][y]
                     state['next_relations'] = state['next_relations'][y,:]
                     state['next_entities'] = state['next_entities'][y, :]
