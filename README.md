@@ -1,7 +1,8 @@
 # REx
 Rewarding Explainability in Drug Repurposing with Knowledge Graphs
 
-- *UPDATE*: A PyTorch implementation is available [here](https://github.com/liseda-lab/REx_PyTorch). It is a more efficient implementation of the approach described in the paper, with some improvements including a final output file with only correct paths and associated lowest common ancestors. The original implementation is still available in this repo for reproducibility purposes.
+> ### For new experiments, use the PyTorch implementation
+A PyTorch implementation is available [here](https://github.com/liseda-lab/REx_PyTorch). It is a more efficient implementation of the approach described in the paper, with some improvements including a final output file with only correct paths and associated lowest common ancestors. The original implementation is still available in this repo for reproducibility purposes.
 
   
 - This repo provides the implementation and Supplementary Material described in this [paper](https://www.ijcai.org/proceedings/2025/0515.pdf).
